@@ -20,22 +20,21 @@ def causal_masking_with_eot(data: numpy.ndarray, eot_token: int):
     :param eot_token: Token that indicates the end of a sequence
     :return: Attention mask of shape (batch_size, sequence_length, sequence_length)
     """
-    mask = torch.tril(torch.ones((data.shape[0], data.shape[1], data.shape[1]))).numpy()
+    mask = torch.tril(torch.ones((1, data.shape[0], data.shape[0]))).numpy()
     eots = np.argwhere(data == eot_token)
     for item in eots:
-        mask[item[0]][item[1]:, :item[1]:] = 0
+        mask[0][item[0]:, :item[0]] = 0
+    plt.imshow(mask[0][1024:, :])
+    plt.show()
     return mask
 
 
 if __name__ == "__main__":
     # mask_examine()
-    data = np.ones((2, 2048))
-    data[0][22] = 0
-    data[0][444] = 0
-    data[0][1023] = 0
-    data[1][123] = 0
-    data[1][201] = 0
-    data[1][1965] = 0
+    data = np.ones((2048))
+    data[322] = 0
+    data[444] = 0
+    data[729] = 0
     causal_masking_with_eot(
         data,
         0
